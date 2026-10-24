@@ -1,0 +1,42 @@
+{
+ "Binney Street and Fulkerson Street": {
+  "lat": 42.3665838,
+  "lon": -71.0881891
+ },
+ "Broadway and Third Street": {
+  "lat": 42.3626521,
+  "lon": -71.084407
+ },
+ "Cambridge St at First Street and N. First Street": {
+  "lat": 42.3706506,
+  "lon": -71.0769217
+ },
+ "First Street and Binney Street": {
+  "lat": 42.3651455,
+  "lon": -71.07820125
+ },
+ "First Street and Thorndike Street": {
+  "lat": 42.3692682,
+  "lon": -71.0772508
+ },
+ "Galileo Galilei Way and Broadway": {
+  "lat": 42.36479,
+  "lon": -71.0894028
+ },
+ "Hampshire Street and Portland Street": {
+  "lat": 42.3662965,
+  "lon": -71.0917831
+ },
+ "Third Street and Binney Street": {
+  "lat": 42.365684200000004,
+  "lon": -71.0824111
+ },
+ "Third Street and Cambridge Street": {
+  "lat": 42.3710284,
+  "lon": -71.0798526
+ },
+ "Massachusetts Avenue and Vassar Street": {
+  "lat": 42.3601506,
+  "lon": -71.0948847
+ }
+}
