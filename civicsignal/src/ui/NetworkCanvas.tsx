@@ -194,12 +194,14 @@ function draw(ctx: CanvasRenderingContext2D, sim: Sim, selected: string | null) 
 
   // Vehicles
   const flash = Math.floor(st.t * 2) % 2 === 0;
+  const emsSpots: { x: number; y: number }[] = [];
   for (const l of Object.values(net.links)) {
     const ls = st.links[l.id];
     for (const g of ['L', 'TR'] as Group[]) {
       ls.q[g].forEach((lane, li) => {
         for (const v of lane) {
           const p = lanePoint(l, g, li, v.x, LANE_W);
+          if (v.kind === 'ems') emsSpots.push({ x: p.x - p.dx * v.len * 0.5, y: p.y - p.dy * v.len * 0.5 });
           ctx.save();
           ctx.translate(p.x, p.y);
           ctx.rotate(Math.atan2(p.dy, p.dx));
@@ -217,6 +219,37 @@ function draw(ctx: CanvasRenderingContext2D, sim: Sim, selected: string | null) 
         }
       });
     }
+  }
+
+  // Emergency vehicles waiting at the network edge still get a ring.
+  for (const e of net.entries)
+    for (const v of st.backlog[e])
+      if (v.kind === 'ems') {
+        const l = net.links[e];
+        emsSpots.push({ x: l.x0, y: l.y0 });
+      }
+
+  // Glowing, pulsing ring so the emergency vehicle is easy to follow. Pulses on wall-clock
+  // time so it stays visible while paused.
+  const pulse = (performance.now() % 1200) / 1200;
+  for (const s of emsSpots) {
+    const glow = ctx.createRadialGradient(s.x, s.y, 2, s.x, s.y, 22);
+    glow.addColorStop(0, 'rgba(255,70,70,0.45)');
+    glow.addColorStop(1, 'rgba(255,70,70,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 22, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 10, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = `rgba(255,90,90,${(1 - pulse).toFixed(2)})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 10 + pulse * 14, 0, Math.PI * 2);
+    ctx.stroke();
   }
 
   // Network-edge backlog (vehicles that could not enter because the entry link is full).
