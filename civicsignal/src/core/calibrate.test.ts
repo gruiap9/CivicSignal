@@ -1,25 +1,32 @@
 import { test } from 'vitest';
 import { runBatch } from './batch';
-import { PRESETS, DEFAULT_WEIGHTS } from './scenario';
-import { planFor } from './twin';
+import { CITIES } from './cities';
+import { calibration, summarizeTwin } from './metrics';
+import { DEFAULT_WEIGHTS } from './scenario';
+import { planFor, Twin } from './twin';
 
-// Not an assertion test: prints a calibration table. Run with CALIBRATE=1.
+// Not an assertion test: prints a calibration report. Run with `npm run calibrate`.
 test.skipIf(!process.env.CALIBRATE)('calibration report', () => {
-  console.log('MIDDAY plan', JSON.stringify(planFor('MIDDAY').cycle), JSON.stringify(planFor('MIDDAY').splits.I11));
-  console.log('PM plan', planFor('PM').cycle, JSON.stringify(planFor('PM').splits.I11));
-  for (const w of [{ flow: 1, climate: 0, transit: 0, fairness: 0 }, { flow: 0.4, climate: 0, transit: 0, fairness: 0.6 }, { flow: 0.3, climate: 0.6, transit: 0.1, fairness: 0 }, { flow: 0.3, climate: 0, transit: 0.6, fairness: 0.1 }]) {
-    const r = runBatch({ cfg: { presetId: 'peak', weights: w, retimeBaseline: false, baselinePreemption: true }, seeds: [1, 2, 3] });
-    console.log('[weights]', JSON.stringify(w), r.stats.map((s) => `${s.key} C ${s.civic.mean.toFixed(1)}`).join(' | '));
+  for (const city of CITIES) {
+    const pm = planFor(city, 'PM');
+    console.log(`\n===== ${city.name}: PM plan cycle ${pm.cycle}s, progression ${pm.progression}`);
+    for (const id of city.net.signals.slice(0, 3)) console.log(`  ${id} coord ${pm.coord[id]} seq ${pm.seq[id].join(',')} splits ${JSON.stringify(pm.splits[id])} offset ${pm.offsets[id]}`);
+    for (const p of city.presets) {
+      const t0 = Date.now();
+      const cfg = { cityId: city.id, presetId: p.id, weights: DEFAULT_WEIGHTS, retimeBaseline: false, baselinePreemption: true };
+      const r = runBatch({ cfg, seeds: [1, 2, 3] });
+      const row = r.stats.map((s) => `${s.key}: B ${s.base.mean.toFixed(1)} C ${s.civic.mean.toFixed(1)} (${s.diff.mean.toFixed(0)}%)`).join(' | ');
+      console.log(`\n[${city.id}/${p.id}] ${Date.now() - t0}ms  ${row}`);
+      if (r.ems) console.log('  ems', JSON.stringify(r.ems));
+      console.log('  inNet end B/C', r.runs.map((x) => `${x.baseline.inNetwork}/${x.civic.inNetwork}`).join(' '));
+      if (city.observed && p.events.length === 0) {
+        const tw = new Twin({ ...cfg, seed: 1 });
+        tw.runToEnd();
+        const cal = calibration(tw)!;
+        const ok = cal.filter((c) => c.geh < 5).length;
+        console.log(`  calibration: ${ok}/${cal.length} approaches GEH<5; worst: ${cal.slice(0, 4).map((c) => `${c.label} obs ${c.observed.toFixed(0)} sim ${c.simulated.toFixed(0)} GEH ${c.geh.toFixed(1)}`).join(' ; ')}`);
+        void summarizeTwin;
+      }
+    }
   }
-  for (const p of PRESETS) {
-    const t0 = Date.now();
-    const r = runBatch({ cfg: { presetId: p.id, weights: DEFAULT_WEIGHTS, retimeBaseline: false, baselinePreemption: true }, seeds: [1, 2, 3] });
-    const row = r.stats
-      .map((s) => `${s.key}: B ${s.base.mean.toFixed(1)} C ${s.civic.mean.toFixed(1)} (${s.diff.mean.toFixed(0)}%)`)
-      .join(' | ');
-    console.log(`\n[${p.id}] ${Date.now() - t0}ms  ${row}`);
-    if (r.ems) console.log('  ems', JSON.stringify(r.ems));
-    console.log('  inNet end B/C', r.runs.map((x) => `${x.baseline.inNetwork}/${x.civic.inNetwork}`).join(' '));
-    console.log('  maxWait where B/C', r.runs.map((x) => `${x.baseline.maxWaitWhere}/${x.civic.maxWaitWhere}`).join(' ; '));
-  }
-}, 120000);
+}, 600000);

@@ -1,11 +1,38 @@
 import { describe, expect, test } from 'vitest';
 import { scorePhases } from '../control/civic';
-import { summarizeTwin } from './metrics';
+import { KENDALL } from './cities/kendall';
+import { calibration, summarizeTwin } from './metrics';
 import { DEFAULT_WEIGHTS, SIM_CONSTANTS } from './scenario';
 import { Twin } from './twin';
 import type { SignalSnap, SignalState } from './types';
 
-const cfg = (presetId: string, seed = 7) => ({ presetId, seed, weights: DEFAULT_WEIGHTS, retimeBaseline: false, baselinePreemption: true });
+const cfg = (presetId: string, seed = 7, cityId = 'portland') => ({ cityId, presetId, seed, weights: DEFAULT_WEIGHTS, retimeBaseline: false, baselinePreemption: true });
+
+describe('Kendall network (OSM + Cambridge counts)', () => {
+  test('one-way streets are respected: no link against OSM one-way direction', () => {
+    const net = KENDALL.net;
+    // Charles St is one-way eastbound between Third and First; Thorndike only enters First St.
+    expect(net.links['H3>H1']).toBeDefined();
+    expect(net.links['H1>H3']).toBeUndefined();
+    expect(net.out['T1'].W).toBeUndefined();
+  });
+
+  test('reproducible with measured demand', () => {
+    const a = new Twin(cfg('story', 5, 'kendall'));
+    const b = new Twin(cfg('story', 5, 'kendall'));
+    a.runToEnd();
+    b.runToEnd();
+    expect(summarizeTwin(a)).toEqual(summarizeTwin(b));
+  });
+
+  test('PM peak reproduces measured approach volumes (GEH < 5 on ≥85% of approaches)', () => {
+    const tw = new Twin(cfg('pm', 1, 'kendall'));
+    tw.runToEnd();
+    const cal = calibration(tw)!;
+    expect(cal.length).toBeGreaterThan(15);
+    expect(cal.filter((c) => c.geh < 5).length / cal.length).toBeGreaterThanOrEqual(0.85);
+  });
+});
 
 describe('reproducibility', () => {
   test('same seed and events → identical results', () => {
@@ -36,8 +63,14 @@ describe('reproducibility', () => {
 });
 
 describe('safety supervisor invariants', () => {
-  test.each(['balanced', 'story', 'turning'])('%s: clearance always precedes a new green; min green respected', (preset) => {
-    const tw = new Twin(cfg(preset, 3));
+  test.each([
+    ['portland', 'balanced'],
+    ['portland', 'story'],
+    ['portland', 'turning'],
+    ['kendall', 'pm'],
+    ['kendall', 'story'],
+  ])('%s/%s: clearance always precedes a new green; min green respected', (city, preset) => {
+    const tw = new Twin(cfg(preset, 3, city));
     const prev: Record<string, Record<string, SignalState>> = {};
     while (!tw.done) {
       tw.step();
@@ -66,8 +99,11 @@ describe('safety supervisor invariants', () => {
     }
   });
 
-  test('vehicles are conserved (spawned = completed + in network)', () => {
-    const tw = new Twin(cfg('story', 11));
+  test.each([
+    ['portland', 'story'],
+    ['kendall', 'story'],
+  ])('%s/%s: vehicles are conserved (spawned = completed + in network)', (city, preset) => {
+    const tw = new Twin(cfg(preset, 11, city));
     for (let i = 0; i < 2400; i++) tw.step();
     for (const run of [tw.baseline, tw.civic]) {
       const st = run.sim.state;

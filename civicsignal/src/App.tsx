@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { summarizeTwin } from './core/metrics';
-import { DEFAULT_WEIGHTS, PRESETS, SIM_CONSTANTS } from './core/scenario';
+import { CITIES, cityById, DEFAULT_CITY } from './core/cities';
+import { DEFAULT_WEIGHTS, SIM_CONSTANTS } from './core/scenario';
 import { Twin, type TwinConfig, type WeightChange } from './core/twin';
 import type { SimEvent, Weights } from './core/types';
 import type { CivicController } from './control/civic';
@@ -23,6 +24,7 @@ import {
 const SPEEDS = [1, 2, 5, 10, 30, 60];
 
 interface Setup {
+  cityId: string;
   presetId: string;
   seed: number;
   retimeBaseline: boolean;
@@ -30,7 +32,7 @@ interface Setup {
 }
 
 export default function App() {
-  const [setup, setSetup] = useState<Setup>({ presetId: 'story', seed: 42, retimeBaseline: false, baselinePreemption: true });
+  const [setup, setSetup] = useState<Setup>({ cityId: DEFAULT_CITY, presetId: cityById(DEFAULT_CITY).defaultPreset, seed: 42, retimeBaseline: false, baselinePreemption: true });
   const [initialTwin] = useState(() => new Twin({ ...setup, weights: DEFAULT_WEIGHTS }));
   const twinRef = useRef<Twin>(initialTwin);
   const [, setTick] = useState(0);
@@ -41,6 +43,7 @@ export default function App() {
   const [aboutOpen, setAboutOpen] = useState(true);
   const rerender = useCallback(() => setTick((x) => x + 1), []);
   const twin = twinRef.current;
+  const node = twin.net.nodes[selected] ? selected : twin.net.signals[Math.floor(twin.net.signals.length / 2)];
   // Sliders always show the weights CivicSignal is actually using (including replayed changes).
   const weights = (twin.civic.controller as CivicController).weights;
 
@@ -80,7 +83,7 @@ export default function App() {
 
   const reset = (next: Setup = setup, opts?: { events?: SimEvent[]; weightChanges?: WeightChange[]; weights?: Weights }) => {
     const old = twinRef.current;
-    const keep = replay && next.seed === old.cfg.seed && next.presetId === old.cfg.presetId;
+    const keep = replay && next.seed === old.cfg.seed && next.presetId === old.cfg.presetId && next.cityId === old.cfg.cityId;
     const cfg: TwinConfig = {
       ...next,
       weights: opts?.weights ?? (keep ? old.cfg.weights : weights),
@@ -114,7 +117,7 @@ export default function App() {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `civicsignal-${tw.cfg.presetId}-seed${tw.cfg.seed}.json`;
+    a.download = `civicsignal-${tw.cfg.cityId}-${tw.cfg.presetId}-seed${tw.cfg.seed}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
@@ -124,7 +127,7 @@ export default function App() {
       const d = JSON.parse(await file.text());
       const c = d.config as TwinConfig;
       reset(
-        { presetId: c.presetId, seed: c.seed, retimeBaseline: c.retimeBaseline, baselinePreemption: c.baselinePreemption },
+        { cityId: c.cityId ?? 'portland', presetId: c.presetId, seed: c.seed, retimeBaseline: c.retimeBaseline, baselinePreemption: c.baselinePreemption },
         { events: d.userEvents ?? [], weightChanges: d.weightChanges ?? [], weights: c.weights },
       );
     } catch {
@@ -174,17 +177,36 @@ export default function App() {
               ). CivicSignal tests whether adaptive, network-level signal control can reduce delay in selected traffic scenarios.
             </p>
             <p className="hint">
-              The 49-hour figure covers congestion on all roads from many causes (demand, bottlenecks, incidents, work zones), not only traffic lights. CivicSignal results come from a small simulated grid and are <b>not</b> scaled up to national or real-city savings.
+              The 49-hour figure covers congestion on all roads from many causes (demand, bottlenecks, incidents, work zones), not only traffic lights. CivicSignal results come from a small simulated network and are <b>not</b> scaled up to national or real-city savings.
             </p>
+            {twin.city.kind === 'measured' ? (
+              <p className="hint">
+                <b>This scenario uses real data:</b> street geometry from OpenStreetMap and traffic volumes and turning shares measured by City of Cambridge roadside sensors (Oct 2026). Signal timing, some side-street volumes and all incidents and emergency vehicles are modeled. See “Data &amp; assumptions” and the calibration check below.
+              </p>
+            ) : (
+              <p className="hint">
+                <b>This scenario uses invented demand</b> on a simplified Portland-style grid. It is useful for exploring controller behavior, not for describing any real street.
+              </p>
+            )}
           </div>
         )}
       </section>
 
       <section className="toolbar panel">
         <label>
+          City{' '}
+          <select value={setup.cityId} onChange={(e) => reset({ ...setup, cityId: e.target.value, presetId: cityById(e.target.value).defaultPreset })} aria-label="City">
+            {CITIES.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
           Scenario{' '}
           <select value={setup.presetId} onChange={(e) => reset({ ...setup, presetId: e.target.value })}>
-            {PRESETS.map((p) => (
+            {twin.city.presets.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
               </option>
@@ -237,15 +259,15 @@ export default function App() {
       <div className="main">
         <div className="left">
           <div className="nets">
-            <NetworkCanvas getSim={getBase} selected={selected} onSelect={setSelected} title={`Baseline: ${(twin.plan.label)}, ${twin.plan.cycle}s cycle`} accent={BASE_COLOR} />
-            <NetworkCanvas getSim={getCivic} selected={selected} onSelect={setSelected} title="CivicSignal: adaptive network control" accent={CIVIC_COLOR} />
+            <NetworkCanvas getSim={getBase} selected={node} onSelect={setSelected} title={`Baseline: ${(twin.plan.label)}, ${twin.plan.cycle}s cycle`} accent={BASE_COLOR} />
+            <NetworkCanvas getSim={getCivic} selected={node} onSelect={setSelected} title="CivicSignal: adaptive network control" accent={CIVIC_COLOR} />
           </div>
           <div className="legend-row muted">
             <span><i className="sw" style={{ background: '#d6d4cc' }} /> moving car</span>
             <span><i className="sw" style={{ background: '#f0a43a' }} /> stopped car</span>
             <span><i className="sw" style={{ background: '#22b8a0' }} /> bus</span>
             <span><i className="sw" style={{ background: '#ff3b3b' }} /> emergency vehicle</span>
-            <span><i className="sw" style={{ background: '#ff7a1a' }} /> incident / roadwork lane closure</span>
+            <span><i className="sw" style={{ background: '#ff7a1a' }} /> incident / roadwork (orange tint)</span>
             <span><b style={{ color: '#e5484d' }}>+n</b> vehicles waiting to enter</span>
             <span>Click an intersection to inspect it</span>
           </div>
@@ -258,8 +280,8 @@ export default function App() {
         </div>
         <aside className="right">
           <PolicyPanel weights={weights} onChange={changeWeights} explanations={explanations} />
-          <DisruptionPanel twin={twin} onDone={rerender} />
-          <EmergencyPanel twin={twin} onDone={rerender} />
+          <DisruptionPanel key={`d-${twin.city.id}`} twin={twin} onDone={rerender} />
+          <EmergencyPanel key={`e-${twin.city.id}`} twin={twin} onDone={rerender} />
         </aside>
       </div>
 
@@ -269,12 +291,12 @@ export default function App() {
           <EmsCard twin={twin} base={sum.baseline} civic={sum.civic} />
         </div>
         <div>
-          <Inspector twin={twin} node={selected} />
+          <Inspector twin={twin} node={node} />
           <DecisionLog twin={twin} />
         </div>
       </div>
 
-      <BatchPanel cfg={{ presetId: setup.presetId, weights, retimeBaseline: setup.retimeBaseline, baselinePreemption: setup.baselinePreemption }} />
+      <BatchPanel cfg={{ cityId: setup.cityId, presetId: setup.presetId, weights, retimeBaseline: setup.retimeBaseline, baselinePreemption: setup.baselinePreemption }} />
       <ScenarioInfo twin={twin} />
       <footer className="muted">
         CivicSignal is a hackathon prototype. Every vehicle, incident and emergency event is simulated. It is not connected to real signals, cameras or dispatch, and its results are not a forecast for any real city.

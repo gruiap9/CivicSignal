@@ -55,6 +55,8 @@ export interface Network {
   inLinks: Record<string, string[]>;
   entries: string[];
   boxHalf: number;
+  /** Degrees the street grid is rotated clockwise from true north (0 for an ideal grid). */
+  tilt: number;
 }
 
 // ---------- Dynamic sim state ----------
@@ -70,6 +72,8 @@ export interface Vehicle {
   len: number;
   spawnT: number;
   dist: number;
+  /** Free-flow time for the distance covered so far (s). */
+  ffT: number;
   idle: number;
   stopRun: number; // current continuous stopped duration
   maxStop: number;

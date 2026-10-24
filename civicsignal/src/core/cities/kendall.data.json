@@ -1,0 +1,1741 @@
+{
+ "generatedBy": "research/scripts/build_kendall.py",
+ "gridTilt": 16.0,
+ "signals": [
+  {
+   "id": "C3",
+   "name": "Cambridge St & Third St",
+   "streets": [
+    "Cambridge Street",
+    "Third Street"
+   ],
+   "sensor": "Third Street and Cambridge Street",
+   "x": 258.9,
+   "y": -504.1,
+   "lat": 42.371028,
+   "lon": -71.079853
+  },
+  {
+   "id": "C2",
+   "name": "Cambridge St & Second St",
+   "streets": [
+    "Cambridge Street",
+    "Second Street"
+   ],
+   "sensor": null,
+   "x": 362.5,
+   "y": -485.9,
+   "lat": 42.370865,
+   "lon": -71.078593
+  },
+  {
+   "id": "C1",
+   "name": "Cambridge St & First St",
+   "streets": [
+    "Cambridge Street",
+    "First Street"
+   ],
+   "sensor": "Cambridge St at First Street and N. First Street",
+   "x": 499.9,
+   "y": -462.0,
+   "lat": 42.370651,
+   "lon": -71.076922
+  },
+  {
+   "id": "T1",
+   "name": "First St & Thorndike St",
+   "streets": [
+    "First Street",
+    "Thorndike Street"
+   ],
+   "sensor": "First Street and Thorndike Street",
+   "x": 472.9,
+   "y": -308.2,
+   "lat": 42.369268,
+   "lon": -71.077251
+  },
+  {
+   "id": "H3",
+   "name": "Third St & Charles St",
+   "streets": [
+    "Third Street",
+    "Charles Street"
+   ],
+   "sensor": null,
+   "x": 156.4,
+   "y": -130.6,
+   "lat": 42.367673,
+   "lon": -71.081098
+  },
+  {
+   "id": "H1",
+   "name": "First St & Charles St",
+   "streets": [
+    "First Street",
+    "Charles Street"
+   ],
+   "sensor": null,
+   "x": 434.3,
+   "y": -82.1,
+   "lat": 42.367238,
+   "lon": -71.077719
+  },
+  {
+   "id": "B3",
+   "name": "Binney St & Third St",
+   "streets": [
+    "Binney Street",
+    "Third Street"
+   ],
+   "sensor": "Third Street and Binney Street",
+   "x": 48.4,
+   "y": 90.8,
+   "lat": 42.365684,
+   "lon": -71.082411
+  },
+  {
+   "id": "B2",
+   "name": "Binney St & Second St",
+   "streets": [
+    "Binney Street",
+    "Second Street"
+   ],
+   "sensor": null,
+   "x": 257.8,
+   "y": 127.1,
+   "lat": 42.365359,
+   "lon": -71.079866
+  },
+  {
+   "id": "B1",
+   "name": "Binney St & First St",
+   "streets": [
+    "Binney Street",
+    "First Street"
+   ],
+   "sensor": "First Street and Binney Street",
+   "x": 394.7,
+   "y": 150.8,
+   "lat": 42.365145,
+   "lon": -71.078201
+  },
+  {
+   "id": "R3",
+   "name": "Broadway & Third St",
+   "streets": [
+    "Broadway",
+    "Third Street"
+   ],
+   "sensor": "Broadway and Third Street",
+   "x": -115.7,
+   "y": 428.3,
+   "lat": 42.362652,
+   "lon": -71.084407
+  }
+ ],
+ "links": [
+  {
+   "from": "C3",
+   "to": "C2",
+   "street": "Cambridge Street",
+   "pathLength": 78.4,
+   "lanes": 1,
+   "vf": 11.18,
+   "heading": "E"
+  },
+  {
+   "from": "C3",
+   "to": "H3",
+   "street": "Third Street",
+   "pathLength": 371.8,
+   "lanes": 1,
+   "vf": 8.94,
+   "heading": "S"
+  },
+  {
+   "from": "C2",
+   "to": "C3",
+   "street": "Cambridge Street",
+   "pathLength": 78.4,
+   "lanes": 1,
+   "vf": 11.18,
+   "heading": "W"
+  },
+  {
+   "from": "C2",
+   "to": "C1",
+   "street": "Cambridge Street",
+   "pathLength": 104.1,
+   "lanes": 2,
+   "vf": 11.18,
+   "heading": "E"
+  },
+  {
+   "from": "C2",
+   "to": "B2",
+   "street": "Second Street",
+   "pathLength": 592.7,
+   "lanes": 1,
+   "vf": 8.94,
+   "heading": "S"
+  },
+  {
+   "from": "C1",
+   "to": "C2",
+   "street": "Cambridge Street",
+   "pathLength": 104.1,
+   "lanes": 1,
+   "vf": 11.18,
+   "heading": "W"
+  },
+  {
+   "from": "C1",
+   "to": "T1",
+   "street": "First Street",
+   "pathLength": 132.7,
+   "lanes": 1,
+   "vf": 11.18,
+   "heading": "S"
+  },
+  {
+   "from": "T1",
+   "to": "C1",
+   "street": "First Street",
+   "pathLength": 132.7,
+   "lanes": 2,
+   "vf": 11.18,
+   "heading": "N"
+  },
+  {
+   "from": "T1",
+   "to": "H1",
+   "street": "First Street",
+   "pathLength": 216.5,
+   "lanes": 1,
+   "vf": 11.18,
+   "heading": "S"
+  },
+  {
+   "from": "H3",
+   "to": "C3",
+   "street": "Third Street",
+   "pathLength": 371.8,
+   "lanes": 1,
+   "vf": 8.94,
+   "heading": "N"
+  },
+  {
+   "from": "H3",
+   "to": "H1",
+   "street": "Charles Street",
+   "pathLength": 260.9,
+   "lanes": 1,
+   "vf": 8.94,
+   "heading": "E"
+  },
+  {
+   "from": "H3",
+   "to": "B3",
+   "street": "Third Street",
+   "pathLength": 208.8,
+   "lanes": 1,
+   "vf": 8.94,
+   "heading": "S"
+  },
+  {
+   "from": "H1",
+   "to": "T1",
+   "street": "First Street",
+   "pathLength": 216.5,
+   "lanes": 1,
+   "vf": 11.18,
+   "heading": "N"
+  },
+  {
+   "from": "H1",
+   "to": "B1",
+   "street": "First Street",
+   "pathLength": 209.6,
+   "lanes": 1,
+   "vf": 11.18,
+   "heading": "S"
+  },
+  {
+   "from": "B3",
+   "to": "H3",
+   "street": "Third Street",
+   "pathLength": 208.8,
+   "lanes": 1,
+   "vf": 8.94,
+   "heading": "N"
+  },
+  {
+   "from": "B3",
+   "to": "B2",
+   "street": "Binney Street",
+   "pathLength": 172.8,
+   "lanes": 3,
+   "vf": 11.18,
+   "heading": "E"
+  },
+  {
+   "from": "B3",
+   "to": "R3",
+   "street": "Third Street",
+   "pathLength": 336.4,
+   "lanes": 2,
+   "vf": 8.94,
+   "heading": "S"
+  },
+  {
+   "from": "B2",
+   "to": "C2",
+   "street": "Second Street",
+   "pathLength": 592.7,
+   "lanes": 1,
+   "vf": 8.94,
+   "heading": "N"
+  },
+  {
+   "from": "B2",
+   "to": "B3",
+   "street": "Binney Street",
+   "pathLength": 188.2,
+   "lanes": 3,
+   "vf": 11.18,
+   "heading": "W"
+  },
+  {
+   "from": "B2",
+   "to": "B1",
+   "street": "Binney Street",
+   "pathLength": 115.8,
+   "lanes": 3,
+   "vf": 11.18,
+   "heading": "E"
+  },
+  {
+   "from": "B1",
+   "to": "H1",
+   "street": "First Street",
+   "pathLength": 209.6,
+   "lanes": 1,
+   "vf": 11.18,
+   "heading": "N"
+  },
+  {
+   "from": "B1",
+   "to": "B2",
+   "street": "Binney Street",
+   "pathLength": 115.1,
+   "lanes": 3,
+   "vf": 11.18,
+   "heading": "W"
+  },
+  {
+   "from": "R3",
+   "to": "B3",
+   "street": "Third Street",
+   "pathLength": 336.4,
+   "lanes": 2,
+   "vf": 8.94,
+   "heading": "N"
+  }
+ ],
+ "boundary": [
+  {
+   "signal": "C3",
+   "side": "W",
+   "dir": "exit",
+   "street": "Cambridge Street",
+   "lanes": 1,
+   "vf": 11.18
+  },
+  {
+   "signal": "C3",
+   "side": "W",
+   "dir": "entry",
+   "street": "Cambridge Street",
+   "lanes": 1,
+   "vf": 11.18
+  },
+  {
+   "signal": "C3",
+   "side": "N",
+   "dir": "exit",
+   "street": "Third Street",
+   "lanes": 1,
+   "vf": 11.18
+  },
+  {
+   "signal": "C3",
+   "side": "N",
+   "dir": "entry",
+   "street": "Third Street",
+   "lanes": 2,
+   "vf": 11.18
+  },
+  {
+   "signal": "C2",
+   "side": "N",
+   "dir": "entry",
+   "street": "Second Street",
+   "lanes": 1,
+   "vf": 11.18
+  },
+  {
+   "signal": "C1",
+   "side": "E",
+   "dir": "exit",
+   "street": "Cambridge Street",
+   "lanes": 1,
+   "vf": 11.18
+  },
+  {
+   "signal": "C1",
+   "side": "E",
+   "dir": "entry",
+   "street": "Cambridge Street",
+   "lanes": 2,
+   "vf": 11.18
+  },
+  {
+   "signal": "C1",
+   "side": "N",
+   "dir": "exit",
+   "street": "North First Street",
+   "lanes": 2,
+   "vf": 11.18
+  },
+  {
+   "signal": "C1",
+   "side": "N",
+   "dir": "entry",
+   "street": "North First Street",
+   "lanes": 2,
+   "vf": 11.18
+  },
+  {
+   "signal": "T1",
+   "side": "W",
+   "dir": "entry",
+   "street": "Thorndike Street",
+   "lanes": 1,
+   "vf": 8.94
+  },
+  {
+   "signal": "H3",
+   "side": "W",
+   "dir": "exit",
+   "street": "Charles Street",
+   "lanes": 1,
+   "vf": 8.94
+  },
+  {
+   "signal": "H3",
+   "side": "W",
+   "dir": "entry",
+   "street": "Charles Street",
+   "lanes": 1,
+   "vf": 8.94
+  },
+  {
+   "signal": "H1",
+   "side": "E",
+   "dir": "exit",
+   "street": "Cambridgeside Place",
+   "lanes": 1,
+   "vf": 11.18
+  },
+  {
+   "signal": "H1",
+   "side": "E",
+   "dir": "entry",
+   "street": "Cambridgeside Place",
+   "lanes": 1,
+   "vf": 11.18
+  },
+  {
+   "signal": "B3",
+   "side": "W",
+   "dir": "exit",
+   "street": "Binney Street",
+   "lanes": 2,
+   "vf": 11.18
+  },
+  {
+   "signal": "B3",
+   "side": "W",
+   "dir": "entry",
+   "street": "Binney Street",
+   "lanes": 3,
+   "vf": 11.18
+  },
+  {
+   "signal": "B2",
+   "side": "S",
+   "dir": "exit",
+   "street": "Second Street",
+   "lanes": 1,
+   "vf": 8.94
+  },
+  {
+   "signal": "B2",
+   "side": "S",
+   "dir": "entry",
+   "street": "Second Street",
+   "lanes": 1,
+   "vf": 8.94
+  },
+  {
+   "signal": "B1",
+   "side": "E",
+   "dir": "exit",
+   "street": "Binney Street",
+   "lanes": 2,
+   "vf": 11.18
+  },
+  {
+   "signal": "B1",
+   "side": "E",
+   "dir": "entry",
+   "street": "Binney Street",
+   "lanes": 2,
+   "vf": 11.18
+  },
+  {
+   "signal": "B1",
+   "side": "S",
+   "dir": "exit",
+   "street": "First Street",
+   "lanes": 1,
+   "vf": 11.18
+  },
+  {
+   "signal": "B1",
+   "side": "S",
+   "dir": "entry",
+   "street": "First Street",
+   "lanes": 1,
+   "vf": 11.18
+  },
+  {
+   "signal": "R3",
+   "side": "E",
+   "dir": "exit",
+   "street": "Broadway",
+   "lanes": 2,
+   "vf": 11.18
+  },
+  {
+   "signal": "R3",
+   "side": "E",
+   "dir": "entry",
+   "street": "Broadway",
+   "lanes": 2,
+   "vf": 11.18
+  },
+  {
+   "signal": "R3",
+   "side": "S",
+   "dir": "exit",
+   "street": "Main Street",
+   "lanes": 1,
+   "vf": 8.94
+  },
+  {
+   "signal": "R3",
+   "side": "W",
+   "dir": "entry",
+   "street": "Broadway",
+   "lanes": 2,
+   "vf": 8.94
+  }
+ ],
+ "boundaryLength": 120,
+ "periods": {
+  "AM": {
+   "label": "08:15\u201309:15 EDT, avg of Tue\u2013Thu 13\u201315 Oct 2026",
+   "utcStart": "12:15",
+   "entries": {
+    "C3:W": {
+     "vph": 275.0,
+     "source": "measured"
+    },
+    "C3:N": {
+     "vph": 459.3,
+     "source": "measured"
+    },
+    "C2:N": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "C1:E": {
+     "vph": 330.3,
+     "source": "measured"
+    },
+    "C1:N": {
+     "vph": 231.0,
+     "source": "measured"
+    },
+    "T1:W": {
+     "vph": 58.7,
+     "source": "measured"
+    },
+    "H3:W": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "H1:E": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "B3:W": {
+     "vph": 214.3,
+     "source": "measured"
+    },
+    "B2:S": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "B1:E": {
+     "vph": 759.7,
+     "source": "measured"
+    },
+    "B1:S": {
+     "vph": 16.7,
+     "source": "measured"
+    },
+    "R3:E": {
+     "vph": 433.7,
+     "source": "measured"
+    },
+    "R3:W": {
+     "vph": 209.7,
+     "source": "measured"
+    }
+   },
+   "busEntries": {
+    "C3:W": 8.0,
+    "C3:N": 1.33,
+    "C1:E": 8.0,
+    "C1:N": 11.34,
+    "T1:W": 0.33,
+    "B3:W": 15.0,
+    "B1:E": 3.67,
+    "R3:E": 2.33,
+    "R3:W": 7.01
+   },
+   "turns": {
+    "B3:E": {
+     "R": 0.67,
+     "L": 84.0,
+     "T": 314.33
+    },
+    "B3:W": {
+     "L": 24.67,
+     "T": 168.0,
+     "R": 21.67
+    },
+    "B3:N": {
+     "R": 88.0,
+     "L": 34.33,
+     "T": 152.33
+    },
+    "B3:S": {
+     "R": 53.0,
+     "T": 66.0,
+     "L": 66.0
+    },
+    "C3:E": {
+     "T": 253.0,
+     "R": 29.33,
+     "L": 17.67
+    },
+    "C3:N": {
+     "L": 27.33,
+     "R": 67.0,
+     "T": 365.0
+    },
+    "C3:W": {
+     "L": 34.67,
+     "T": 212.67,
+     "R": 27.67
+    },
+    "C3:S": {
+     "R": 6.33,
+     "T": 72.33,
+     "L": 14.0
+    },
+    "R3:W": {
+     "R": 31.0,
+     "L": 85.0,
+     "T": 93.67
+    },
+    "R3:E": {
+     "L": 235.0,
+     "R": 197.0,
+     "T": 1.67
+    },
+    "R3:N": {
+     "L": 67.0,
+     "T": 57.67
+    },
+    "R3:S": {
+     "T": 0.67,
+     "R": 0.33
+    },
+    "B1:E": {
+     "T": 431.0,
+     "R": 149.33,
+     "L": 179.33
+    },
+    "B1:N": {
+     "L": 7.0,
+     "R": 40.33,
+     "T": 362.67
+    },
+    "B1:W": {
+     "L": 38.67,
+     "R": 58.67,
+     "T": 126.67
+    },
+    "B1:S": {
+     "L": 2.67,
+     "R": 5.33,
+     "T": 8.67
+    },
+    "C1:E": {
+     "R": 1.67,
+     "L": 78.67,
+     "T": 250.0
+    },
+    "C1:S": {
+     "R": 25.33,
+     "T": 56.67,
+     "L": 12.33
+    },
+    "C1:N": {
+     "R": 19.0,
+     "T": 210.33,
+     "L": 1.67
+    },
+    "C1:W": {
+     "L": 31.33,
+     "T": 162.67,
+     "R": 27.0
+    },
+    "T1:W": {
+     "R": 50.0,
+     "L": 8.67
+    },
+    "T1:N": {
+     "T": 325.33
+    },
+    "T1:S": {
+     "T": 85.0
+    },
+    "H1:S": {
+     "T": 0.432,
+     "L": 0.284,
+     "R": 0.284
+    },
+    "H1:N": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    },
+    "H3:S": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    },
+    "H3:N": {
+     "T": 0.669,
+     "L": 0.165,
+     "R": 0.165
+    },
+    "B2:W": {
+     "T": 0.877,
+     "L": 0.061,
+     "R": 0.061
+    },
+    "B2:E": {
+     "T": 0.842,
+     "L": 0.079,
+     "R": 0.079
+    },
+    "C2:W": {
+     "T": 0.897,
+     "L": 0.051,
+     "R": 0.051
+    },
+    "C2:E": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    }
+   },
+   "busTurns": {
+    "R3:E": {
+     "L": 1.33,
+     "R": 1.0
+    },
+    "R3:N": {
+     "T": 2.0,
+     "L": 0.67
+    },
+    "R3:W": {
+     "L": 1.67,
+     "R": 4.67,
+     "T": 0.67
+    },
+    "C1:E": {
+     "L": 6.67,
+     "T": 1.33
+    },
+    "C1:N": {
+     "T": 8.67,
+     "R": 2.67
+    },
+    "C1:S": {
+     "T": 8.33,
+     "R": 0.33
+    },
+    "C1:W": {
+     "T": 1.67,
+     "L": 0.33
+    },
+    "B1:E": {
+     "T": 3.0,
+     "R": 0.67
+    },
+    "B1:N": {
+     "R": 6.67,
+     "T": 0.67
+    },
+    "B1:W": {
+     "T": 1.0,
+     "L": 7.33,
+     "R": 0.33
+    },
+    "T1:N": {
+     "T": 8.0
+    },
+    "T1:S": {
+     "T": 6.33
+    },
+    "T1:W": {
+     "L": 0.33
+    },
+    "B3:E": {
+     "T": 13.33,
+     "L": 0.67
+    },
+    "B3:S": {
+     "T": 1.33,
+     "L": 1.0
+    },
+    "B3:W": {
+     "T": 14.33,
+     "L": 0.67
+    },
+    "B3:N": {
+     "T": 1.0,
+     "R": 0.67
+    },
+    "C3:E": {
+     "T": 5.0
+    },
+    "C3:N": {
+     "T": 1.33
+    },
+    "C3:W": {
+     "L": 5.33,
+     "T": 2.67
+    },
+    "C3:S": {
+     "T": 0.33
+    }
+   },
+   "observed": {
+    "B3:E": 399.0,
+    "B3:W": 214.3,
+    "B3:N": 274.7,
+    "B3:S": 185.0,
+    "C3:E": 300.0,
+    "C3:N": 459.3,
+    "C3:W": 275.0,
+    "C3:S": 92.7,
+    "R3:W": 209.7,
+    "R3:E": 433.7,
+    "R3:N": 124.7,
+    "R3:S": 1.0,
+    "B1:E": 759.7,
+    "B1:N": 410.0,
+    "B1:W": 224.0,
+    "B1:S": 16.7,
+    "C1:E": 330.3,
+    "C1:S": 94.3,
+    "C1:N": 231.0,
+    "C1:W": 221.0,
+    "T1:W": 58.7,
+    "T1:N": 325.3,
+    "T1:S": 85.0
+   },
+   "estimatedTurns": {
+    "H1:S": {
+     "up": "B1",
+     "down": "T1",
+     "departures": 196.7,
+     "arrivals": 85.0,
+     "ratio": 0.43
+    },
+    "H1:N": {
+     "up": "T1",
+     "down": "B1",
+     "departures": 375.3,
+     "arrivals": 410.0,
+     "ratio": 1.09
+    },
+    "H3:S": {
+     "up": "B3",
+     "down": "C3",
+     "departures": 91.3,
+     "arrivals": 92.7,
+     "ratio": 1.01
+    },
+    "H3:N": {
+     "up": "C3",
+     "down": "B3",
+     "departures": 410.3,
+     "arrivals": 274.7,
+     "ratio": 0.67
+    },
+    "B2:W": {
+     "up": "B3",
+     "down": "B1",
+     "departures": 255.3,
+     "arrivals": 224.0,
+     "ratio": 0.88
+    },
+    "B2:E": {
+     "up": "B1",
+     "down": "B3",
+     "departures": 474.0,
+     "arrivals": 399.0,
+     "ratio": 0.84
+    },
+    "C2:W": {
+     "up": "C3",
+     "down": "C1",
+     "departures": 246.3,
+     "arrivals": 221.0,
+     "ratio": 0.9
+    },
+    "C2:E": {
+     "up": "C1",
+     "down": "C3",
+     "departures": 281.3,
+     "arrivals": 300.0,
+     "ratio": 1.07
+    }
+   }
+  },
+  "MIDDAY": {
+   "label": "12:00\u201313:00 EDT, avg of Tue\u2013Thu 13\u201315 Oct 2026",
+   "utcStart": "16:00",
+   "entries": {
+    "C3:W": {
+     "vph": 331.0,
+     "source": "measured"
+    },
+    "C3:N": {
+     "vph": 145.3,
+     "source": "measured"
+    },
+    "C2:N": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "C1:E": {
+     "vph": 268.3,
+     "source": "measured"
+    },
+    "C1:N": {
+     "vph": 83.0,
+     "source": "measured"
+    },
+    "T1:W": {
+     "vph": 42.0,
+     "source": "measured"
+    },
+    "H3:W": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "H1:E": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "B3:W": {
+     "vph": 230.0,
+     "source": "measured"
+    },
+    "B2:S": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "B1:E": {
+     "vph": 335.0,
+     "source": "measured"
+    },
+    "B1:S": {
+     "vph": 27.7,
+     "source": "measured"
+    },
+    "R3:E": {
+     "vph": 324.7,
+     "source": "measured"
+    },
+    "R3:W": {
+     "vph": 220.3,
+     "source": "measured"
+    }
+   },
+   "busEntries": {
+    "C3:W": 3.33,
+    "C3:N": 0.66,
+    "C1:E": 1.0,
+    "C1:N": 8.0,
+    "T1:W": 0.33,
+    "B3:W": 9.34,
+    "B1:E": 5.33,
+    "B1:S": 0.33,
+    "R3:E": 2.67,
+    "R3:W": 5.66
+   },
+   "turns": {
+    "C1:W": {
+     "T": 264.0,
+     "R": 22.33,
+     "L": 29.0
+    },
+    "C1:E": {
+     "L": 41.33,
+     "T": 225.67,
+     "R": 1.33
+    },
+    "C1:S": {
+     "L": 17.33,
+     "R": 69.0,
+     "T": 59.67
+    },
+    "C1:N": {
+     "T": 64.33,
+     "R": 18.0,
+     "L": 0.67
+    },
+    "B3:S": {
+     "L": 57.0,
+     "T": 77.0,
+     "R": 78.0
+    },
+    "B3:W": {
+     "T": 172.33,
+     "L": 40.0,
+     "R": 17.67
+    },
+    "B3:N": {
+     "L": 35.33,
+     "R": 44.33,
+     "T": 45.67
+    },
+    "B3:E": {
+     "L": 41.0,
+     "T": 168.33,
+     "R": 1.0
+    },
+    "R3:N": {
+     "L": 46.67,
+     "T": 34.67,
+     "R": 0.33
+    },
+    "R3:W": {
+     "T": 104.33,
+     "L": 87.0,
+     "R": 29.0
+    },
+    "R3:E": {
+     "L": 157.67,
+     "R": 167.0
+    },
+    "R3:S": {
+     "T": 2.0,
+     "R": 0.33
+    },
+    "C3:W": {
+     "T": 264.33,
+     "R": 22.67,
+     "L": 44.0
+    },
+    "C3:N": {
+     "R": 35.0,
+     "T": 99.0,
+     "L": 11.33
+    },
+    "C3:S": {
+     "L": 28.67,
+     "R": 22.67,
+     "T": 82.33
+    },
+    "C3:E": {
+     "T": 256.0,
+     "L": 11.0,
+     "R": 40.67
+    },
+    "B1:E": {
+     "R": 71.33,
+     "L": 56.67,
+     "T": 207.0
+    },
+    "B1:S": {
+     "T": 8.33,
+     "R": 15.33,
+     "L": 4.0
+    },
+    "B1:W": {
+     "L": 42.0,
+     "R": 64.33,
+     "T": 174.0
+    },
+    "B1:N": {
+     "T": 142.33,
+     "L": 8.0,
+     "R": 31.33
+    },
+    "T1:S": {
+     "T": 129.0
+    },
+    "T1:N": {
+     "T": 130.0
+    },
+    "T1:W": {
+     "R": 22.67,
+     "L": 19.33
+    },
+    "H1:S": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    },
+    "H1:N": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    },
+    "H3:S": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    },
+    "H3:N": {
+     "T": 0.944,
+     "L": 0.028,
+     "R": 0.028
+    },
+    "B2:W": {
+     "T": 0.981,
+     "L": 0.009,
+     "R": 0.009
+    },
+    "B2:E": {
+     "T": 0.868,
+     "L": 0.066,
+     "R": 0.066
+    },
+    "C2:W": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    },
+    "C2:E": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    }
+   },
+   "busTurns": {
+    "R3:W": {
+     "R": 4.33,
+     "T": 0.33,
+     "L": 1.0
+    },
+    "R3:N": {
+     "T": 1.67
+    },
+    "R3:E": {
+     "R": 0.67,
+     "L": 2.0
+    },
+    "C1:E": {
+     "T": 1.0
+    },
+    "C1:N": {
+     "T": 6.0,
+     "R": 2.0
+    },
+    "C1:S": {
+     "T": 6.0,
+     "R": 0.67
+    },
+    "C1:W": {
+     "T": 1.33
+    },
+    "B1:N": {
+     "R": 4.33
+    },
+    "B1:W": {
+     "T": 3.33,
+     "L": 4.33,
+     "R": 0.33
+    },
+    "B1:E": {
+     "T": 4.67,
+     "L": 0.33,
+     "R": 0.33
+    },
+    "B1:S": {
+     "L": 0.33
+    },
+    "T1:N": {
+     "T": 6.0
+    },
+    "T1:S": {
+     "T": 7.0
+    },
+    "T1:W": {
+     "R": 0.33
+    },
+    "B3:E": {
+     "T": 6.67,
+     "L": 1.67
+    },
+    "B3:W": {
+     "T": 8.67,
+     "L": 0.67
+    },
+    "B3:S": {
+     "L": 0.67,
+     "R": 0.67
+    },
+    "B3:N": {
+     "R": 0.67,
+     "T": 0.33
+    },
+    "C3:E": {
+     "T": 2.67
+    },
+    "C3:W": {
+     "L": 2.33,
+     "T": 0.67,
+     "R": 0.33
+    },
+    "C3:N": {
+     "T": 0.33,
+     "L": 0.33
+    },
+    "C3:S": {
+     "T": 0.33
+    }
+   },
+   "observed": {
+    "C1:W": 315.3,
+    "C1:E": 268.3,
+    "C1:S": 146.0,
+    "C1:N": 83.0,
+    "B3:S": 212.0,
+    "B3:W": 230.0,
+    "B3:N": 125.3,
+    "B3:E": 210.3,
+    "R3:N": 81.7,
+    "R3:W": 220.3,
+    "R3:E": 324.7,
+    "R3:S": 2.3,
+    "C3:W": 331.0,
+    "C3:N": 145.3,
+    "C3:S": 133.7,
+    "C3:E": 307.7,
+    "B1:E": 335.0,
+    "B1:S": 27.7,
+    "B1:W": 280.3,
+    "B1:N": 181.7,
+    "T1:S": 129.0,
+    "T1:N": 130.0,
+    "T1:W": 42.0
+   },
+   "estimatedTurns": {
+    "H1:S": {
+     "up": "B1",
+     "down": "T1",
+     "departures": 121.7,
+     "arrivals": 129.0,
+     "ratio": 1.06
+    },
+    "H1:N": {
+     "up": "T1",
+     "down": "B1",
+     "departures": 152.7,
+     "arrivals": 181.7,
+     "ratio": 1.19
+    },
+    "H3:S": {
+     "up": "B3",
+     "down": "C3",
+     "departures": 118.0,
+     "arrivals": 133.7,
+     "ratio": 1.13
+    },
+    "H3:N": {
+     "up": "C3",
+     "down": "B3",
+     "departures": 132.7,
+     "arrivals": 125.3,
+     "ratio": 0.94
+    },
+    "B2:W": {
+     "up": "B3",
+     "down": "B1",
+     "departures": 285.7,
+     "arrivals": 280.3,
+     "ratio": 0.98
+    },
+    "B2:E": {
+     "up": "B1",
+     "down": "B3",
+     "departures": 242.3,
+     "arrivals": 210.3,
+     "ratio": 0.87
+    },
+    "C2:W": {
+     "up": "C3",
+     "down": "C1",
+     "departures": 298.3,
+     "arrivals": 315.3,
+     "ratio": 1.06
+    },
+    "C2:E": {
+     "up": "C1",
+     "down": "C3",
+     "departures": 261.0,
+     "arrivals": 307.7,
+     "ratio": 1.18
+    }
+   }
+  },
+  "PM": {
+   "label": "16:45\u201317:45 EDT, avg of Tue\u2013Thu 13\u201315 Oct 2026",
+   "utcStart": "20:45",
+   "entries": {
+    "C3:W": {
+     "vph": 318.3,
+     "source": "measured"
+    },
+    "C3:N": {
+     "vph": 279.7,
+     "source": "measured"
+    },
+    "C2:N": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "C1:E": {
+     "vph": 249.0,
+     "source": "measured"
+    },
+    "C1:N": {
+     "vph": 169.7,
+     "source": "measured"
+    },
+    "T1:W": {
+     "vph": 99.3,
+     "source": "measured"
+    },
+    "H3:W": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "H1:E": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "B3:W": {
+     "vph": 459.7,
+     "source": "measured"
+    },
+    "B2:S": {
+     "vph": 120,
+     "source": "modeled"
+    },
+    "B1:E": {
+     "vph": 520.7,
+     "source": "measured"
+    },
+    "B1:S": {
+     "vph": 26.7,
+     "source": "measured"
+    },
+    "R3:E": {
+     "vph": 339.7,
+     "source": "measured"
+    },
+    "R3:W": {
+     "vph": 301.0,
+     "source": "measured"
+    }
+   },
+   "busEntries": {
+    "C3:W": 4.66,
+    "C3:N": 1.0,
+    "C1:E": 0.33,
+    "C1:N": 12.0,
+    "T1:W": 0.33,
+    "B3:W": 18.67,
+    "B1:E": 4.0,
+    "R3:E": 8.0,
+    "R3:W": 5.67
+   },
+   "turns": {
+    "C3:E": {
+     "L": 7.0,
+     "T": 237.0,
+     "R": 200.0
+    },
+    "C3:N": {
+     "R": 54.33,
+     "L": 10.0,
+     "T": 215.33
+    },
+    "C3:S": {
+     "T": 282.0,
+     "L": 16.33,
+     "R": 8.33
+    },
+    "C3:W": {
+     "L": 69.0,
+     "R": 25.33,
+     "T": 224.0
+    },
+    "B3:S": {
+     "R": 40.67,
+     "T": 139.67,
+     "L": 69.0
+    },
+    "B3:N": {
+     "T": 127.0,
+     "R": 50.33,
+     "L": 36.67
+    },
+    "B3:W": {
+     "T": 233.0,
+     "R": 56.33,
+     "L": 170.33
+    },
+    "B3:E": {
+     "L": 40.67,
+     "T": 194.67,
+     "R": 0.33
+    },
+    "T1:W": {
+     "R": 34.67,
+     "L": 64.67
+    },
+    "T1:S": {
+     "T": 339.33
+    },
+    "T1:N": {
+     "T": 209.33
+    },
+    "C1:W": {
+     "T": 204.33,
+     "L": 50.33,
+     "R": 12.33
+    },
+    "C1:N": {
+     "R": 23.33,
+     "T": 145.0,
+     "L": 1.33
+    },
+    "C1:S": {
+     "L": 19.33,
+     "T": 188.67,
+     "R": 206.0
+    },
+    "C1:E": {
+     "L": 54.0,
+     "T": 194.0,
+     "R": 1.0
+    },
+    "R3:W": {
+     "T": 189.33,
+     "L": 84.67,
+     "R": 27.0
+    },
+    "R3:N": {
+     "L": 206.67,
+     "T": 48.0
+    },
+    "R3:E": {
+     "T": 1.33,
+     "R": 143.33,
+     "L": 195.0
+    },
+    "R3:S": {
+     "R": 0.33,
+     "T": 1.0
+    },
+    "B1:W": {
+     "L": 67.0,
+     "T": 105.67,
+     "R": 121.67
+    },
+    "B1:E": {
+     "T": 289.67,
+     "R": 188.0,
+     "L": 43.0
+    },
+    "B1:N": {
+     "T": 297.33,
+     "R": 40.67,
+     "L": 5.33
+    },
+    "B1:S": {
+     "T": 17.0,
+     "R": 7.67,
+     "L": 2.0
+    },
+    "H1:S": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    },
+    "H1:N": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    },
+    "H3:S": {
+     "T": 0.988,
+     "L": 0.006,
+     "R": 0.006
+    },
+    "H3:N": {
+     "T": 0.864,
+     "L": 0.068,
+     "R": 0.068
+    },
+    "B2:W": {
+     "T": 0.948,
+     "L": 0.026,
+     "R": 0.026
+    },
+    "B2:E": {
+     "T": 0.709,
+     "L": 0.145,
+     "R": 0.145
+    },
+    "C2:W": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    },
+    "C2:E": {
+     "T": 1.0,
+     "L": 0.0,
+     "R": 0.0
+    }
+   },
+   "busTurns": {
+    "R3:E": {
+     "R": 0.67,
+     "L": 7.33
+    },
+    "R3:W": {
+     "R": 4.0,
+     "L": 0.67,
+     "T": 1.0
+    },
+    "R3:N": {
+     "T": 1.0,
+     "L": 0.33
+    },
+    "C1:N": {
+     "T": 8.33,
+     "R": 3.67
+    },
+    "C1:S": {
+     "T": 7.67,
+     "R": 3.67
+    },
+    "C1:W": {
+     "L": 1.33,
+     "T": 1.33
+    },
+    "C1:E": {
+     "T": 0.33
+    },
+    "B1:N": {
+     "R": 8.0,
+     "T": 1.0
+    },
+    "B1:W": {
+     "L": 9.33,
+     "T": 1.0
+    },
+    "B1:E": {
+     "T": 4.0
+    },
+    "T1:N": {
+     "T": 7.33
+    },
+    "T1:S": {
+     "T": 7.33
+    },
+    "T1:W": {
+     "R": 0.33
+    },
+    "B3:E": {
+     "T": 8.33,
+     "L": 1.0
+    },
+    "B3:W": {
+     "T": 17.0,
+     "L": 1.67
+    },
+    "B3:N": {
+     "L": 0.33,
+     "R": 0.67,
+     "T": 0.33
+    },
+    "B3:S": {
+     "L": 0.33,
+     "T": 0.33,
+     "R": 0.67
+    },
+    "C3:E": {
+     "T": 3.67
+    },
+    "C3:N": {
+     "R": 0.67,
+     "T": 0.33
+    },
+    "C3:W": {
+     "L": 3.33,
+     "T": 1.33
+    },
+    "C3:S": {
+     "T": 1.0
+    }
+   },
+   "observed": {
+    "C3:E": 444.0,
+    "C3:N": 279.7,
+    "C3:S": 306.7,
+    "C3:W": 318.3,
+    "B3:S": 249.3,
+    "B3:N": 214.0,
+    "B3:W": 459.7,
+    "B3:E": 235.7,
+    "T1:W": 99.3,
+    "T1:S": 339.3,
+    "T1:N": 209.3,
+    "C1:W": 267.0,
+    "C1:N": 169.7,
+    "C1:S": 414.0,
+    "C1:E": 249.0,
+    "R3:W": 301.0,
+    "R3:N": 254.7,
+    "R3:E": 339.7,
+    "R3:S": 1.3,
+    "B1:W": 294.3,
+    "B1:E": 520.7,
+    "B1:N": 343.3,
+    "B1:S": 26.7
+   },
+   "estimatedTurns": {
+    "H1:S": {
+     "up": "B1",
+     "down": "T1",
+     "departures": 272.0,
+     "arrivals": 339.3,
+     "ratio": 1.25
+    },
+    "H1:N": {
+     "up": "T1",
+     "down": "B1",
+     "departures": 244.0,
+     "arrivals": 343.3,
+     "ratio": 1.41
+    },
+    "H3:S": {
+     "up": "B3",
+     "down": "C3",
+     "departures": 310.3,
+     "arrivals": 306.7,
+     "ratio": 0.99
+    },
+    "H3:N": {
+     "up": "C3",
+     "down": "B3",
+     "departures": 247.7,
+     "arrivals": 214.0,
+     "ratio": 0.86
+    },
+    "B2:W": {
+     "up": "B3",
+     "down": "B1",
+     "departures": 310.3,
+     "arrivals": 294.3,
+     "ratio": 0.95
+    },
+    "B2:E": {
+     "up": "B1",
+     "down": "B3",
+     "departures": 332.3,
+     "arrivals": 235.7,
+     "ratio": 0.71
+    },
+    "C2:W": {
+     "up": "C3",
+     "down": "C1",
+     "departures": 242.3,
+     "arrivals": 267.0,
+     "ratio": 1.1
+    },
+    "C2:E": {
+     "up": "C1",
+     "down": "C3",
+     "departures": 236.7,
+     "arrivals": 444.0,
+     "ratio": 1.88
+    }
+   }
+  }
+ },
+ "notes": [
+  "AM H1: 1.09x more traffic arrives at B1 than leaves T1; the extra joins from side streets, so through share is capped at 100%",
+  "AM C2: 1.07x more traffic arrives at C3 than leaves C1; the extra joins from side streets, so through share is capped at 100%",
+  "MIDDAY H1: 1.06x more traffic arrives at T1 than leaves B1; the extra joins from side streets, so through share is capped at 100%",
+  "MIDDAY H1: 1.19x more traffic arrives at B1 than leaves T1; the extra joins from side streets, so through share is capped at 100%",
+  "MIDDAY H3: 1.13x more traffic arrives at C3 than leaves B3; the extra joins from side streets, so through share is capped at 100%",
+  "MIDDAY C2: 1.06x more traffic arrives at C1 than leaves C3; the extra joins from side streets, so through share is capped at 100%",
+  "MIDDAY C2: 1.18x more traffic arrives at C3 than leaves C1; the extra joins from side streets, so through share is capped at 100%",
+  "PM H1: 1.25x more traffic arrives at T1 than leaves B1; the extra joins from side streets, so through share is capped at 100%",
+  "PM H1: 1.41x more traffic arrives at B1 than leaves T1; the extra joins from side streets, so through share is capped at 100%",
+  "PM C2: 1.10x more traffic arrives at C1 than leaves C3; the extra joins from side streets, so through share is capped at 100%",
+  "PM C2: 1.88x more traffic arrives at C3 than leaves C1; the extra joins from side streets, so through share is capped at 100%",
+  "AM R3: measured approach from S (1 veh/h) has no entry in the OSM network",
+  "MIDDAY R3: measured approach from S (2 veh/h) has no entry in the OSM network",
+  "PM R3: measured approach from S (1 veh/h) has no entry in the OSM network"
+ ]
+}

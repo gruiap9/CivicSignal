@@ -4,7 +4,7 @@
 // (so spillback emerges naturally). State is plain data → cheap to clone.
 
 import { groupOf, isExit, LEFT_OF, phaseOf, RIGHT_OF, turnBetween } from './network';
-import { EMS_ROUTES, nodesToRoute, SIM_CONSTANTS } from './scenario';
+import { nodesToRoute, SIM_CONSTANTS, type EmsRoute } from './scenario';
 import { initSignal, permits, tickSignal } from './supervisor';
 import type { Arrival } from './demand';
 import type {
@@ -83,6 +83,8 @@ export interface SimState {
   closures: ActiveClosure[];
   /** Throughput counts trips completed in [warmup, measureEnd] (the demand window). */
   measureEnd: number;
+  /** Non-emergency vehicles that crossed each link's stop line during [warmup, measureEnd] — what a sensor counts. */
+  served: Record<string, number>;
 }
 
 export function vehicleGroup(net: Network, v: Vehicle, ri = v.ri): Group {
@@ -146,6 +148,7 @@ export class Sim {
       ems: {},
       closures: [],
       measureEnd: Infinity,
+      served: {},
     };
   }
 
@@ -180,6 +183,7 @@ export class Sim {
       len: kind === 'bus' ? 12 : kind === 'ems' ? 8 : 5,
       spawnT,
       dist: 0,
+      ffT: 0,
       idle: 0,
       stopRun: 0,
       maxStop: 0,
@@ -192,7 +196,7 @@ export class Sim {
     };
   }
 
-  applyEvent(ev: SimEvent, emsId: number) {
+  applyEvent(ev: SimEvent, emsId: number, emsRoute?: EmsRoute) {
     const s = this.state;
     if (ev.kind === 'incident' || ev.kind === 'roadwork') {
       const ls = s.links[ev.link];
@@ -200,20 +204,20 @@ export class Sim {
       ls.closedTR = Math.min(this.net.links[ev.link].lanes.TR - 1, ls.closedTR + 1);
       ls.speedFactor = ev.kind === 'incident' ? 0.4 : 0.7;
     } else if (ev.kind === 'ems') {
-      const r = EMS_ROUTES.find((x) => x.id === ev.route)!;
+      const r = emsRoute!;
       const route = nodesToRoute(r.nodes);
       const v = this.makeVehicle(emsId, 'ems', route, s.t);
       v.label = ev.vehicle === 'fire' ? 'Fire truck (simulated)' : 'Ambulance (simulated)';
       v.emsNodeDelay = {};
       let ff = 0;
       // Crossing the intersection box is instantaneous in this model, so free-flow uses link lengths only.
-      for (const id of route) ff += this.net.links[id].length;
+      for (const id of route) ff += this.net.links[id].length / (this.net.links[id].vf * 1.25);
       s.ems[emsId] = {
         id: emsId,
         label: `${v.label} — ${r.name}`,
         spawnT: s.t,
         endT: null,
-        freeFlow: ff / (this.net.links[route[0]].vf * 1.25),
+        freeFlow: ff,
         stops: 0,
         stoppedTime: 0,
         nodeDelay: {},
@@ -257,14 +261,13 @@ export class Sim {
     return this.laneWithRoom(nxt, vehicleGroup(this.net, v, v.ri + 1)).lane >= 0;
   }
 
+  /** Delay = time in system − free-flow time for the distance covered (each link at its own speed limit). */
   delayOf(v: Vehicle, t: number) {
-    const vf = this.net.links[v.route[0]].vf * (v.kind === 'ems' ? 1.25 : 1);
-    return Math.max(0, t - v.spawnT - v.dist / vf);
+    return Math.max(0, t - v.spawnT - v.ffT);
   }
 
   busLateness(v: Vehicle, t: number) {
-    const vf = this.net.links[v.route[0]].vf;
-    return v.lateness0 + (t - v.spawnT) - (v.dist / vf) * SCHEDULE_SLACK;
+    return v.lateness0 + (t - v.spawnT) - v.ffT * SCHEDULE_SLACK;
   }
 
   // ---------- step ----------
@@ -309,6 +312,7 @@ export class Sim {
             const step = Math.min(nv * dt, Math.max(0, limit - v.x));
             v.x += step;
             v.dist += step;
+            v.ffT += step / (link.vf * (v.kind === 'ems' ? 1.25 : 1));
             v.v = nv;
             this.trackStop(v, dt, link.to);
             if (i === 0 && go && v.x >= link.length) transfers.push({ v, overflow: v.x - link.length });
@@ -323,6 +327,7 @@ export class Sim {
       const ls = s.links[cur.id];
       ls.q[curGroup][v.lane].shift();
       ls.lastDis[curGroup][v.lane] = t;
+      if (v.kind !== 'ems' && t >= SIM_CONSTANTS.warmup && t <= s.measureEnd) s.served[cur.id] = (s.served[cur.id] ?? 0) + 1;
       if (v.ri === v.route.length - 1) {
         this.complete(v);
         continue;

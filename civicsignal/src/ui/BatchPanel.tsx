@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { BatchResult, MetricStat } from '../core/batch';
 import { METRICS } from '../core/metrics';
-import { PRESETS } from '../core/scenario';
+import { CITIES } from '../core/cities';
 import type { TwinConfig } from '../core/twin';
 import type { Weights } from '../core/types';
 import type { WorkerIn } from './batch.worker';
@@ -40,7 +40,7 @@ export function BatchPanel({ cfg }: { cfg: Omit<TwinConfig, 'seed'> }) {
     w.postMessage(msg);
   };
   const seeds = (k: number) => Array.from({ length: k }, (_, i) => 1001 + i);
-  const presetName = (id: string) => PRESETS.find((p) => p.id === id)?.name ?? id;
+  const presetName = (id: string) => CITIES.flatMap((c) => c.presets).find((p) => p.id === id)?.name ?? id;
 
   return (
     <section className="panel wide">

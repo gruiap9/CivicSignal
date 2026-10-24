@@ -1,4 +1,5 @@
 import type { Sim } from './sim';
+import { SIM_CONSTANTS } from './scenario';
 import type { Twin } from './twin';
 
 // Rough idle-CO₂ proxy, NOT an emissions model: U.S. DOE says light-duty idling
@@ -117,4 +118,39 @@ export function compare(base: number, civ: number, better: 'lower' | 'higher') {
     pct: improved ? mag : -mag,
     text: `${mag.toFixed(mag < 10 ? 1 : 0)}% ${raw < 0 ? 'lower' : 'higher'} (${improved ? 'better' : 'worse'})`,
   };
+}
+
+export interface CalibrationRow {
+  link: string;
+  label: string;
+  observed: number;
+  simulated: number;
+  geh: number;
+}
+
+/**
+ * Simulated vs. measured hourly approach volumes at sensored intersections (baseline copy).
+ * GEH = sqrt(2(M−C)²/(M+C)); the usual acceptance target is GEH < 5 for ≥85% of counts.
+ * Only meaningful for presets that replay the measured demand without surges.
+ */
+export function calibration(tw: Twin): CalibrationRow[] | null {
+  const obs = tw.city.observed?.[tw.period];
+  if (!obs) return null;
+  const s = tw.baseline.sim.state;
+  const hours = (Math.min(s.t, s.measureEnd) - SIM_CONSTANTS.warmup) / 3600;
+  if (hours <= 0.05) return [];
+  return Object.entries(obs)
+    .filter(([, m]) => m >= 20)
+    .map(([link, m]) => {
+      const c = (s.served[link] ?? 0) / hours;
+      const l = tw.net.links[link];
+      return {
+        link,
+        label: `${tw.net.nodes[l.to].name}: ${l.name.replace(/ ([NESW])B$/, ' $1B approach')}`,
+        observed: m,
+        simulated: c,
+        geh: Math.sqrt((2 * (m - c) ** 2) / (m + c || 1)),
+      };
+    })
+    .sort((a, b) => b.geh - a.geh);
 }

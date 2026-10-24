@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { scorePhases, type CivicController } from '../control/civic';
 import type { BaselineController } from '../control/baseline';
-import { compare, METRICS, type Summary } from '../core/metrics';
-import { CITY, EMS_ROUTES, SIM_CONSTANTS, type Side } from '../core/scenario';
+import { calibration, compare, METRICS, type Summary } from '../core/metrics';
+import { SIM_CONSTANTS, type Side } from '../core/scenario';
 import { lightFor } from '../core/supervisor';
 import type { Twin } from '../core/twin';
 import { PHASE_NAMES, PHASES, type DecisionEntry, type Weights } from '../core/types';
@@ -62,9 +62,9 @@ export function PolicyPanel({ weights, onChange, explanations }: { weights: Weig
 
 export function DisruptionPanel({ twin, onDone }: { twin: Twin; onDone: () => void }) {
   const [side, setSide] = useState<Side>('S');
-  const [rwLink, setRwLink] = useState('I11>I21');
-  const [rwMin, setRwMin] = useState(10);
   const linkOpts = Object.values(twin.net.links).filter((l) => twin.net.nodes[l.to].kind === 'signal');
+  const [rwLink, setRwLink] = useState(linkOpts[0].id);
+  const [rwMin, setRwMin] = useState(10);
   const act = (f: () => void) => {
     f();
     onDone();
@@ -102,7 +102,8 @@ export function DisruptionPanel({ twin, onDone }: { twin: Twin; onDone: () => vo
 }
 
 export function EmergencyPanel({ twin, onDone }: { twin: Twin; onDone: () => void }) {
-  const [route, setRoute] = useState(EMS_ROUTES[0].id);
+  const routes = twin.city.emsRoutes;
+  const [route, setRoute] = useState(routes[0].id);
   const [kind, setKind] = useState<'ambulance' | 'fire'>('ambulance');
   return (
     <section className="panel">
@@ -116,7 +117,7 @@ export function EmergencyPanel({ twin, onDone }: { twin: Twin; onDone: () => voi
           <option value="fire">Fire truck</option>
         </select>
         <select value={route} onChange={(e) => setRoute(e.target.value)} aria-label="Route">
-          {EMS_ROUTES.map((r) => (
+          {routes.map((r) => (
             <option key={r.id} value={r.id}>
               {r.name}
             </option>
@@ -361,11 +362,15 @@ export function Inspector({ twin, node }: { twin: Twin; node: string }) {
 
 export function ScenarioInfo({ twin }: { twin: Twin }) {
   const plan = (twin.baseline.controller as BaselineController).plan;
+  const meta = twin.city.meta;
+  const cal = calibration(twin);
+  const calOk = cal ? cal.filter((c) => c.geh < 5).length : 0;
+  const replaysCounts = twin.preset.events.length === 0 && twin.userEvents.length === 0;
   return (
     <section className="panel wide about" id="data">
       <h3>Scenario, data sources &amp; assumptions</h3>
       <p>
-        <b>City / corridor:</b> {CITY.city}: {CITY.corridor}.
+        <b>City / corridor:</b> {meta.city}: {meta.corridor}.
       </p>
       <table className="metrics">
         <thead>
@@ -376,11 +381,11 @@ export function ScenarioInfo({ twin }: { twin: Twin }) {
           </tr>
         </thead>
         <tbody>
-          {CITY.sources.map((s) => (
+          {meta.sources.map((s) => (
             <tr key={s.what}>
               <td>{s.what}</td>
               <td>
-                <span className={`badge ${s.status.startsWith('Sourced') ? 'ok' : ''}`}>{s.status}</span>
+                <span className={`badge ${/^(Sourced|Measured)/.test(s.status) ? 'ok' : ''}`}>{s.status}</span>
               </td>
               <td>{s.note}</td>
             </tr>
@@ -388,11 +393,51 @@ export function ScenarioInfo({ twin }: { twin: Twin }) {
         </tbody>
       </table>
       <p>
-        <b>Baseline used in this run:</b> {plan.label}: {plan.cycle}s common cycle, Webster splits, {plan.progression} green-wave offsets on the avenues, actuated side phases (gap-out on an empty 30 m detector, skip with no call, early return to the coordinated phase), min greens 5–8s, yellow {SIM_CONSTANTS.yellow}s + all-red {SIM_CONSTANTS.allRed}s. Fixed for the whole run.
+        <b>Baseline used in this run:</b> {plan.label}: {plan.cycle}s common cycle, Webster splits, {plan.progression} green-wave offsets, actuated side phases (gap-out on an empty 30 m detector, skip with no call, early return to the coordinated phase), min greens 5–8s, yellow {SIM_CONSTANTS.yellow}s + all-red {SIM_CONSTANTS.allRed}s. Fixed for the whole run.
       </p>
+      {cal && (
+        <>
+          <b>Calibration: simulated vs. measured approach volumes</b>
+          <p className="hint">
+            Baseline copy, {twin.city.periodLabels[twin.period]}. GEH = √(2(M−C)²/(M+C)); the common acceptance target for traffic models is GEH &lt; 5 on at least 85% of counts.
+            {!replaysCounts && ' This run adds simulated events or surges, so volumes are not expected to match the counts. Use a plain measured preset to check calibration.'}
+            {cal.length === 0 && ' Run the simulation past warm-up to see results.'}
+          </p>
+          {cal.length > 0 && (
+            <>
+              <p>
+                <span className={`badge ${calOk / cal.length >= 0.85 ? 'ok' : ''}`}>
+                  {calOk}/{cal.length} approaches GEH &lt; 5 ({Math.round((100 * calOk) / cal.length)}%)
+                </span>{' '}
+                {twin.done ? 'Full run.' : `Partial run (${fmtClock(twin.t)}); numbers settle as the hour completes.`}
+              </p>
+              <table className="metrics">
+                <thead>
+                  <tr>
+                    <th>Approach</th>
+                    <th>Measured veh/h</th>
+                    <th>Simulated veh/h</th>
+                    <th>GEH</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cal.map((c) => (
+                    <tr key={c.link}>
+                      <td>{c.label}</td>
+                      <td className="num">{c.observed.toFixed(0)}</td>
+                      <td className="num">{c.simulated.toFixed(0)}</td>
+                      <td className={`num ${c.geh < 5 ? 'better' : 'worse'}`}>{c.geh.toFixed(1)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
+        </>
+      )}
       <b>Limitations</b>
       <ul>
-        {CITY.limitations.map((l) => (
+        {meta.limitations.map((l) => (
           <li key={l}>{l}</li>
         ))}
       </ul>

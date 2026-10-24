@@ -7,10 +7,11 @@ import { CivicController } from '../control/civic';
 import type { Controller } from '../control/controller';
 import { SeededDemand } from './demand';
 import { hashSeed, Rng } from './rng';
-import { buildPortland, EMS_ROUTES, entryLinkId, PRESETS, SIM_CONSTANTS, TOD_PROFILES, todPeriod, type Preset, type Side } from './scenario';
+import { cityById } from './cities';
+import { SIM_CONSTANTS, todPeriod, type CityScenario, type Period, type Preset, type Side } from './scenario';
 import { Sim } from './sim';
 import { applyRequest } from './supervisor';
-import type { DecisionEntry, Network, SimEvent, Weights } from './types';
+import type { DecisionEntry, Heading, Network, SimEvent, Weights } from './types';
 
 export class Run {
   sim: Sim;
@@ -55,6 +56,7 @@ export class Run {
 }
 
 export interface TwinConfig {
+  cityId: string;
   presetId: string;
   seed: number;
   weights: Weights;
@@ -76,11 +78,11 @@ export interface AppliedEvent {
   source: 'preset' | 'user';
 }
 
-export const NETWORK: Network = buildPortland();
-
 export class Twin {
-  readonly net = NETWORK;
+  readonly city: CityScenario;
+  readonly net: Network;
   readonly cfg: TwinConfig;
+  readonly period: Period;
   readonly preset: Preset;
   readonly plan: TimingPlan;
   readonly demand: SeededDemand;
@@ -100,15 +102,21 @@ export class Twin {
 
   constructor(cfg: TwinConfig) {
     this.cfg = cfg;
-    this.preset = PRESETS.find((p) => p.id === cfg.presetId) ?? PRESETS[0];
-    const period = todPeriod(this.preset.clockHour);
+    this.city = cityById(cfg.cityId);
+    this.net = this.city.net;
+    this.preset = this.city.presets.find((p) => p.id === cfg.presetId) ?? this.city.presets.find((p) => p.id === this.city.defaultPreset)!;
+    this.period = todPeriod(this.preset.clockHour);
     this.plan = cfg.retimeBaseline
-      ? computePlan(this.net, this.preset.demand, `Retimed for this scenario's demand (best-case fixed timing)`)
-      : planFor(period);
-    this.demand = new SeededDemand(this.net, this.preset.demand, cfg.seed, this.preset.duration);
+      ? computePlan(this.net, this.preset.demand, this.city.busLines, `Retimed for this scenario's demand (best-case fixed timing)`)
+      : planFor(this.city, this.period);
+    this.demand = new SeededDemand(this.net, this.preset.demand, this.city.busLines, cfg.seed, this.preset.duration);
     this.baseline = new Run(new Sim(this.net), new BaselineController(this.net, this.plan, cfg.baselinePreemption));
     this.civic = new Run(new Sim(this.net), new CivicController(this.net, cfg.weights));
-    this.baseline.sim.state.measureEnd = this.civic.sim.state.measureEnd = this.preset.duration;
+    for (const r of [this.baseline, this.civic]) {
+      r.sim.state.measureEnd = this.preset.duration;
+      // Both copies start in the baseline's coordinated phase so neither gets a head start.
+      for (const id of this.net.signals) r.sim.state.signals[id].phase = r.sim.state.signals[id].next = this.plan.coord[id];
+    }
     this.eventRng = new Rng(hashSeed(cfg.seed, 'events'));
     for (const ev of this.preset.events) this.schedule.push({ ev, source: 'preset' });
     for (const ev of cfg.extraEvents ?? []) this.schedule.push({ ev, source: 'user' });
@@ -171,8 +179,10 @@ export class Twin {
       this.shadows = { baseline: this.baseline.clone(), civic: this.civic.clone() };
     }
     const id = ev.kind === 'ems' ? this.nextEmsId++ : 0;
-    this.baseline.sim.applyEvent(ev, id);
-    this.civic.sim.applyEvent(ev, id);
+    const route = ev.kind === 'ems' ? this.city.emsRoutes.find((r) => r.id === ev.route) : undefined;
+    if (ev.kind === 'ems' && !route) return;
+    this.baseline.sim.applyEvent(ev, id, route);
+    this.civic.sim.applyEvent(ev, id, route);
     if (ev.kind !== 'ems' && this.shadows) {
       this.shadows.baseline.sim.applyEvent(ev, id);
       this.shadows.civic.sim.applyEvent(ev, id);
@@ -194,7 +204,8 @@ export class Twin {
   }
 
   surge(side: Side, factor = 1.6, duration = 600) {
-    const entries = [0, 1, 2].map((i) => entryLinkId(side, i));
+    const opp: Record<Side, Heading> = { N: 'S', S: 'N', E: 'W', W: 'E' };
+    const entries = this.net.entries.filter((e) => this.net.links[e].heading === opp[side]);
     const names: Record<Side, string> = { N: 'north', S: 'south', E: 'east', W: 'west' };
     this.trigger({ kind: 'surge', t: 0, entries, factor, duration, label: `Surge: +${Math.round((factor - 1) * 100)}% from the ${names[side]} for ${duration / 60} min` });
   }
@@ -205,7 +216,7 @@ export class Twin {
   }
 
   emergency(routeId: string, vehicle: 'ambulance' | 'fire') {
-    const r = EMS_ROUTES.find((x) => x.id === routeId)!;
+    const r = this.city.emsRoutes.find((x) => x.id === routeId)!;
     this.trigger({ kind: 'ems', t: 0, route: routeId, vehicle, label: `${vehicle === 'fire' ? 'Fire truck' : 'Ambulance'} (simulated): ${r.name}` });
   }
 
@@ -215,6 +226,8 @@ export class Twin {
 }
 
 const planCache: Record<string, TimingPlan> = {};
-export function planFor(period: 'AM' | 'MIDDAY' | 'PM'): TimingPlan {
-  return (planCache[period] ??= computePlan(NETWORK, TOD_PROFILES[period], `${period === 'MIDDAY' ? 'Midday' : period} time-of-day plan`));
+export function planFor(city: CityScenario, period: Period): TimingPlan {
+  const name = period === 'MIDDAY' ? 'Midday' : period;
+  const src = city.kind === 'measured' ? 'from measured counts' : 'from modeled demand';
+  return (planCache[`${city.id}:${period}`] ??= computePlan(city.net, city.periods[period], city.busLines, `${name} time-of-day plan (${src})`));
 }
